@@ -172,7 +172,6 @@ def makeSample() -> tuple[Image.Image, list[TextInfo]]:
         (original, text) = makeTextRect()
         bended = trapezoide(original)
         (rotated, theBorder) = rotateRect(bended)
-        print(theBorder)
         bounds = MultiPoint(theBorder).bounds
         offset = Point((random() * (sizeOfMain[0] - bounds[2]), random() * (sizeOfMain[1] - bounds[3])))
         info = TextInfo(text, tuple(transform(theBorder, lambda p: p + [offset.x, offset.y])))
