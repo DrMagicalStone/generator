@@ -1,6 +1,6 @@
-from PIL import Image, ImageFont, ImageDraw, ImageTransform
+from PIL import Image, ImageFont, ImageDraw, ImageTransform, ImageFilter
 
-from shapely import Point, Polygon, MultiPoint, transform
+from shapely import Point, MultiPoint, transform
 
 from numpy import matrix, array, cross, asarray, maximum, minimum, concatenate, identity
 
@@ -12,7 +12,7 @@ from character import generateRandomString
 from util import clamp
 from TextInfo import TextInfo
 
-font = ImageFont.truetype("MadokaRunes-2.0.ttf", 32)
+font = ImageFont.truetype("MadokaRunes.ttf", 32)
 
 def generateMultilineText() -> str:
     text = ""
@@ -25,15 +25,15 @@ def generateMultilineText() -> str:
 def makeTextRect() -> tuple[Image.Image, str]:
     text = generateMultilineText()
     
-    scaler = ImageDraw.Draw(Image.new("RGBA", (0, 0), (0, 0, 0, 0)))
+    scaler = ImageDraw.Draw(Image.new("1", (0, 0), 0))
 
     (_, _, textWidth, textHeight) = scaler.multiline_textbbox((0, 0), text, font=font)
     
-    im = Image.new("RGBA", (textWidth, textHeight), (0, 0, 0, 0))
+    im = Image.new("1", (textWidth, textHeight), )
     
     drawer = ImageDraw.Draw(im)
 
-    drawer.multiline_text((0, 0), text, font=font, fill=(255, 255, 255, 255), align="center")
+    drawer.multiline_text((0, 0), text, font=font, fill=1, align="center")
     
     return im, text
 
@@ -76,7 +76,7 @@ def rotateRect(im: Image.Image) -> tuple[Image.Image, tuple[Point, Point, Point,
     center = matrix([[length, length]]).T / 2
     centerAffine = matrix([[length, length, 2]]).T / 2
     
-    resizedIm = Image.new("RGBA", (length, length), (0, 0, 0, 0))
+    resizedIm = Image.new("1", (length, length), 0)
     
     resizedIm.paste(box=((length - size[0]) // 2, (length - size[1]) // 2), im = im, mask=im)
     
@@ -151,7 +151,7 @@ def perspectiveRect(im: Image.Image) -> Image.Image :
     
     rotationTranspose = rotation.transpose()
     
-    resizedIm = Image.new("RGBA", (int(box[2] - box[0]), int(box[3] - box[1])), (0, 0, 0, 255))
+    resizedIm = Image.new("1", (int(box[2] - box[0]), int(box[3] - box[1])), 1)
     
     print(im.size, resizedIm.size)
     
@@ -163,8 +163,8 @@ def perspectiveRect(im: Image.Image) -> Image.Image :
 
 
 
-def makeSample() -> Image.Image:
-    mainIm = Image.new("RGBA", (1920, 1080), (0, 0, 0, 0))
+def makeSample() -> tuple[Image.Image, list[TextInfo]]:
+    mainIm = Image.new("1", (1920, 1080), 0)
     sizeOfMain = mainIm.size
     textInfos: list[TextInfo] = []
 
@@ -183,7 +183,9 @@ def makeSample() -> Image.Image:
             textInfos.append(info)
             mainIm.paste(mask=rotated, im=rotated, box=(int(offset.x), int(offset.y)))
     
-    print(textInfos)
-    mainIm.show()
+    return (mainIm, textInfos)
         
-makeSample()
+if (__name__ == "__main__"):
+    (im, infos) = makeSample()
+    print(infos)
+    im.show()

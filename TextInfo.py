@@ -15,4 +15,4 @@ class TextInfo:
         return border.intersects(anotherBorder)
                 
     def __repr__(self) -> str:
-        return self.text + ": " + str(self.border)
+        return self.text.replace("\n", "\\n") + ": " + str(self.border)
