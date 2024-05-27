@@ -1,5 +1,7 @@
 from shapely import Point, LineString, Polygon
 
+from re import sub
+
 class TextInfo:
     
     def __init__(self, text: str, border: tuple[Point, Point, Point, Point]) -> None:

@@ -17,8 +17,8 @@ font = ImageFont.truetype("MadokaRunes.ttf", 32)
 def generateMultilineText() -> str:
     text = ""
 
-    for i in range(0, randint(1, 4)):
-        text = text + generateRandomString(int(clamp(normalvariate(mu=32, sigma=8), 16, 48))).strip() + "\n"
+    for i in range(0, randint(1, 1)):
+        text = text + generateRandomString(int(clamp(normalvariate(mu=8, sigma=6), 1, 16))).strip() + "\n"
     
     return text.strip()
 
@@ -46,20 +46,20 @@ def trapezoide(im: Image.Image) -> Image.Image:
     c = array([size[0], size[1]])
     d = array([size[0], 0])
     
-    fixB = b[1] * 1 / 4 * random()
+    fixB = b[1] * 1 / 16 * random()
     
     angleB = random() * pi / 2
     
     b = b + array([-cos(angleB), sin(angleB)]) * fixB
     
-    fixCX = c[0] * 1 / 4 * random()
-    fixCY = c[1] * 1 / 4 * random()
+    fixCX = c[0] * 1 / 16 * random()
+    fixCY = c[1] * 1 / 16 * random()
     
     angleC = random() * pi / 2
     
     c = c + array([cos(angleC) * fixCX, sin(angleC) * fixCY])
     
-    fixD = d[0] * 1 / 4 * random()
+    fixD = d[0] * 1 / 16 * random()
     
     angleD = random() * pi / 2
     
@@ -68,7 +68,7 @@ def trapezoide(im: Image.Image) -> Image.Image:
     return im.transform(size=im.size, method=ImageTransform.QuadTransform((a[0], a[1], b[0], b[1], c[0], c[1], d[0], d[1])), fillcolor=(0, 0, 0, 0))
 
 def rotateRect(im: Image.Image) -> tuple[Image.Image, tuple[Point, Point, Point, Point]] :
-    rad = random() * 2 * pi
+    rad = (random() - 1 / 2) * pi / 8
     rotationLinear = matrix([[cos(rad), sin(rad)], [-sin(rad), cos(rad)]]).T
     size = im.size
     length = int((size[0] ** 2 + size[1] ** 2) ** (1 / 2))
@@ -168,7 +168,7 @@ def makeSample() -> tuple[Image.Image, list[TextInfo]]:
     sizeOfMain = mainIm.size
     textInfos: list[TextInfo] = []
 
-    for i in range(0, 5):
+    for _ in range(0, 16):
         (original, text) = makeTextRect()
         bended = trapezoide(original)
         (rotated, theBorder) = rotateRect(bended)
